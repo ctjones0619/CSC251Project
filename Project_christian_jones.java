@@ -1,93 +1,84 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 
-public class Project_christian_jones{
+public class Project_christian_jones {
 
-//create scanner object
+   public static void main(String[] args) throws IOException {
 
+      ArrayList<Policy> policies = new ArrayList<Policy>();
 
-   public static void main(String [] args){
-   
-   //create scanner object 
-   Scanner keyboard = new Scanner(System.in);
-  
-  
-   String policyNumber;
-   String providerName;
-   String firstName;
-   String lastName;
-   int age;
-   String smokingStatus;
-   double heightInches;
-   double weightPounds;
-   
-   
-   //collect input
-  
-  
-   System.out.println("Please enter the Policy Number: "); 
-   policyNumber = keyboard.nextLine();
-  
-   System.out.println("Please enter the Provider Name: ");
-   providerName = keyboard.nextLine();
-   
-   System.out.println("Please enter the Policyholder's First Name: ");
-   firstName = keyboard.nextLine();
-   
-   System.out.println("Please enter the Policyholder's Last Name: ");
-   lastName = keyboard.nextLine();
-   
-   System.out.println("Please enter the Policyholder's Age: ");
-   age = keyboard.nextInt();
-   keyboard.nextLine(); //eats newline char
-   
-   System.out.println("Please enter the Policyholder's Smoking Status (smoker/non-smoker): ");
-   smokingStatus = keyboard.nextLine();
-   
-   System.out.println("Please enter the Policyholder's Height (in inches): ");
-   heightInches = keyboard.nextDouble();
-   
-   System.out.println("Please enter the Policyholder's Weight (in pounds): ");
-   weightPounds = keyboard.nextDouble();
-   
-          
-   
-   
-   //create new object p2
-   Policy p2 = new Policy(policyNumber, providerName, firstName, lastName, age, smokingStatus, heightInches, weightPounds);
-   
-   
-   
-   //use setters to validate all input
-   p2.setPolicyNumber(policyNumber);
-   p2.setProviderName(providerName);
-   p2.setFirstName(firstName);
-   p2.setLastName(lastName);
-   p2.setAge(age);
-   p2.setSmokingStatus(smokingStatus);
-   p2.setHeightInches(heightInches);
-   p2.setWeightPounds(weightPounds);
-   
-   
-   
-   
-   
-   
-   
-   //print results
-   System.out.println("Policy Number: " + policyNumber);
-   System.out.println("Provider Name: " + providerName);
-   System.out.println("Policyholder's First Name: " + firstName);
-   System.out.println("Policyholder's Last Name: " + lastName);
-   System.out.println("Policyholder's Age: " + age);
-   System.out.println("Policyholder's Smoking Status: " + smokingStatus);
-   System.out.println("Policyholder's Height: " + heightInches);
-   System.out.println("Policyholder's Weight: " + weightPounds);
-   System.out.printf("Policyholder's BMI: %.2f%n", + p2.getBMI() );
-   System.out.printf("Policy Price: $%.2f%n", + p2.calculatePolicyCost() );
+      // open the PolicyInformation.txt file (must be in same folder as .java files)
+      File file = new File("PolicyInformation.txt");
+      Scanner fileScanner = new Scanner(file);
 
-   
-   
-   
+      // read until there is no more data
+      while (fileScanner.hasNextLine()) {
+
+         // read first line (policy number) and SKIP blank separator lines
+         String policyNumber = fileScanner.nextLine();
+
+         // if this line is blank, go to the next iteration
+         if (policyNumber.trim().isEmpty()) {
+            continue;
+         }
+
+         String providerName   = fileScanner.nextLine();
+         String firstName      = fileScanner.nextLine();
+         String lastName       = fileScanner.nextLine();
+         int age               = Integer.parseInt(fileScanner.nextLine());
+         String smokingStatus  = fileScanner.nextLine();
+         double heightInches   = Double.parseDouble(fileScanner.nextLine());
+         double weightPounds   = Double.parseDouble(fileScanner.nextLine());
+
+         // create Policy object
+         Policy p = new Policy(policyNumber, providerName, firstName, lastName, age, smokingStatus,heightInches, weightPounds);
+
+                              
+                               
+         // use setters for validation (per original project)
+         p.setPolicyNumber(policyNumber);
+         p.setProviderName(providerName);
+         p.setFirstName(firstName);
+         p.setLastName(lastName);
+         p.setAge(age);
+         p.setSmokingStatus(smokingStatus);
+         p.setHeightInches(heightInches);
+         p.setWeightPounds(weightPounds);
+
+         policies.add(p);
+      }
+
+      fileScanner.close();
+
+      int smokerCount = 0;
+      int nonSmokerCount = 0;
+
+      // display info for each policy
+      for (Policy p : policies) {
+
+         System.out.println("Policy Number: " + p.getPolicyNumber());
+         System.out.println("Provider Name: " + p.getProviderName());
+         System.out.println("Policyholder's First Name: " + p.getFirstName());
+         System.out.println("Policyholder's Last Name: " + p.getLastName());
+         System.out.println("Policyholder's Age: " + p.getAge());
+         System.out.println("Policyholder's Smoking Status (smoker/non-smoker): "
+                            + p.getSmokingStatus());
+         System.out.println("Policyholder's Height: " + p.getHeightInches() + " inches");
+         System.out.println("Policyholder's Weight: " + p.getWeightPounds() + " pounds");
+         System.out.printf("Policyholder's BMI: %.2f%n", p.getBMI());
+         System.out.printf("Policy Price: $%.2f%n", p.calculatePolicyCost());
+         System.out.println();
+
+         if (p.getSmokingStatus().equalsIgnoreCase("smoker")) {
+            smokerCount++;
+         } else {
+            nonSmokerCount++;
+         }
+      }
+
+      System.out.println("The number of policies with a smoker is: " + smokerCount);
+      System.out.println("The number of policies with a non-smoker is: " + nonSmokerCount);
    }
-
 }
